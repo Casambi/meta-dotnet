@@ -12,6 +12,10 @@ dotnet_do_configure() {
      bberror "DOTNET_PROJECT must be specified!"
      exit -1
     fi
+    if [ -z ${INSTALL_DIR} ] ; then
+     bberror "INSTALL_DIR must be specified!"
+     exit -2
+    fi
     cd ${S}
     dotnet restore
 }
@@ -39,14 +43,14 @@ dotnet_do_compile()  {
 dotnet_do_install() {
     cd ${B}
     rm -rf recipe-sysroot-native
-    mkdir -p ${D}/opt/dotnet/${PN}
-    cp -rv * ${D}/opt/dotnet/${PN}
+    mkdir -p ${D}${INSTALL_DIR}
+    cp -rv * ${D}${INSTALL_DIR}
 }
 
 INSANE_SKIP:${PN}:append = " already-stripped"
 INSANE_SKIP:${PN}:append = " staticdev"
 INSANE_SKIP:${PN}:append = " file-rdeps"
 
-FILES:${PN} = "/opt/dotnet/${PN}"
+FILES:${PN} = "${INSTALL_DIR}"
 
 EXPORT_FUNCTIONS do_configure do_compile do_install
